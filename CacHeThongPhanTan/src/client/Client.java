@@ -40,6 +40,7 @@ public class Client extends javax.swing.JFrame implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent e) {
                 jLabel_GheBiHuy.setText("Ghế " + gheDangDat + " đã bị hủy đặt");
+                buttons[Integer.parseInt(gheDangDat)].setBackground(Color.green);
                 access.Update("update TICKET set BLOCK = 0 where ID = " + gheDangDat);
                 timerDatGhe.stop();
             }
@@ -75,6 +76,11 @@ public class Client extends javax.swing.JFrame implements ActionListener{
         jLabel_CanhBao = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jPanel_Buttons.setBackground(new java.awt.Color(255, 255, 255));
         jPanel_Buttons.setLayout(new java.awt.GridLayout(5, 10, 5, 5));
@@ -159,13 +165,18 @@ public class Client extends javax.swing.JFrame implements ActionListener{
             while(rs.next()) {  
                 i = rs.getInt(1);
                 
-                if(rs.getInt(2) == 1) {                    
+                if(rs.getInt(2) == 1) { // đã được mua                   
                     buttons[i].setBackground(Color.red);
                     buttons[i].removeActionListener(this);
-                }
-                else
+                }                
+                else if(rs.getInt(3) == 1) { // đã được đặt
+                    buttons[i].setBackground(Color.yellow);
                     buttons[i].addActionListener(this);
-                
+                }                
+                else {// chưa mua, chưa đặt
+                    buttons[i].setBackground(Color.green);
+                    buttons[i].addActionListener(this);
+                }
                 
             }
         } catch (SQLException ex) {
@@ -180,15 +191,20 @@ public class Client extends javax.swing.JFrame implements ActionListener{
             while(rs.next()) {  
                 i = rs.getInt(1);
                 buttons[i] = new JButton();
-                buttons[i].setText(rs.getString(1) + "");
+                buttons[i].setText(i + "");
                 
-                if(rs.getInt(2) == 1) {                    
+                if(rs.getInt(2) == 1) { // đã được mua               
                     buttons[i].setBackground(Color.red);
-                    //buttons[i].setEnabled(false);
+                    buttons[i].removeActionListener(this);
                 }
-                else
+                else if(rs.getInt(3) == 1) { // đã được đặt
+                    buttons[i].setBackground(Color.yellow);
                     buttons[i].addActionListener(this);
-                
+                }                
+                else { // chưa mua, chưa đặt
+                    buttons[i].setBackground(Color.green);
+                    buttons[i].addActionListener(this);
+                }
                 jPanel_Buttons.add(buttons[i]);
             }
         } catch (SQLException ex) {
@@ -207,6 +223,11 @@ public class Client extends javax.swing.JFrame implements ActionListener{
         buttons[i].removeActionListener(this);
     }//GEN-LAST:event_jButton_MuaActionPerformed
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        access.Update("update TICKET set BLOCK = 0 where SOLD = 0");
+    }//GEN-LAST:event_formWindowClosing
+
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton btn = (JButton) e.getSource();
@@ -215,7 +236,7 @@ public class Client extends javax.swing.JFrame implements ActionListener{
         try {
             if(rs.next())
                 if(rs.getInt(3) == 1) {
-                    jLabel_CanhBao.setText("Ghế đã được người khác đặt!");
+                    jLabel_CanhBao.setText("Ghế đang được đặt!");
                     return;
                 }                    
         } catch (SQLException ex) {
@@ -225,11 +246,13 @@ public class Client extends javax.swing.JFrame implements ActionListener{
         if(timerDatGhe.isRunning()){
             timerDatGhe.stop();
             jLabel_GheBiHuy.setText("Ghế " + gheDangDat + " đã bị hủy đặt");
+            buttons[Integer.parseInt(gheDangDat)].setBackground(Color.green);
             access.Update("update TICKET set BLOCK = 0 where ID = " + gheDangDat);
         }           
         
         gheDangDat = btn.getText();
         jLabel_GheDangDat.setText("Ghế " + gheDangDat + " đang được đặt");
+        buttons[Integer.parseInt(gheDangDat)].setBackground(Color.yellow);
         access.Update("update TICKET set BLOCK = 1 where ID = " + gheDangDat);
         timerDatGhe.start();
     }
