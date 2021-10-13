@@ -2,20 +2,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package client;
+package javaapplication22;
 
-import database.DBAccess;
+import javaapplication22.DBAccess;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.Timer;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,23 +35,55 @@ public class Client extends javax.swing.JFrame implements ActionListener{
     private Timer timerDatGhe;
     private Timer timerRefresh;
     private String gheDangDat;
+    private String trangThaiGhe;
     private DBAccess access;
-    private JButton[] buttons;
+    public JButton[] buttons;
+    public Ghe[] listGhe;
     
+    DataOutputStream dos = null;
+     DataInputStream dis = null;
+
+    
+    
+    Socket client ;
     /**
      * Creates new form Client
      */
     public Client() {
+        
         initComponents();
+        try {
+            client = new Socket(InetAddress.getLocalHost(),15797);
+          
+            
+                      
+            // gửi câu lệnh
+            dos = new DataOutputStream(client.getOutputStream());
+            dis = new DataInputStream(client.getInputStream());  
+//            ReadClient read = new ReadClient(client);
+//            read.start();
+            
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
         access = new DBAccess();
         gheDangDat = "";
-        
+        trangThaiGhe = "";
+        listGhe = new Ghe[100];
         timerDatGhe = new Timer(10000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 jLabel_GheBiHuy.setText("Ghế " + gheDangDat + " đã bị hủy đặt");
-                buttons[Integer.parseInt(gheDangDat)].setBackground(Color.green);
-                access.Update("update TICKET set BLOCK = 0 where ID = " + gheDangDat);
+                 buttons[Integer.parseInt(gheDangDat)].setBackground(Color.green);
+                 String ok = "update TICKET set BLOCK = 0 where ID = " + gheDangDat;
+                try {                
+                    dos.writeUTF(ok);
+                } catch (IOException ex) {
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
                 timerDatGhe.stop();
             }
         });
@@ -164,87 +201,142 @@ public class Client extends javax.swing.JFrame implements ActionListener{
     }// </editor-fold>//GEN-END:initComponents
 
     public void refreshButtons() {
-        try {
-            ResultSet rs = access.Query("select * from TICKET");
-            int i = 0;
-            while(rs.next()) {  
-                i = rs.getInt(1);
+         try {
+            dos.writeUTF("select * from TICKET");  
+             String sms = dis.readUTF();                             
+             String[] words = sms.split("\\s");
+             System.out.println("refreshButtons");
+             int x = 1;
+             for(int i = words.length-1; i > 0 ; i= i-2){
                 
-                if(rs.getInt(2) == 1) { // đã được mua                   
-                    buttons[i].setBackground(Color.red);
-                    buttons[i].removeActionListener(this);
+                if(Integer.parseInt(words[i-1]) == 1) { // đã được mua                   
+                    buttons[x].setBackground(Color.red);
+                    buttons[x].removeActionListener(this);
+                   
                 }                
-                else if(rs.getInt(3) == 1) { // đã được đặt
-                    buttons[i].setBackground(Color.yellow);
-                    buttons[i].addActionListener(this);
+                else if(Integer.parseInt(words[i]) == 1) { // đã được đặt
+                    buttons[x].setBackground(Color.yellow);
+                    buttons[x].addActionListener(this);
+                  
                 }                
                 else {// chưa mua, chưa đặt
-                    buttons[i].setBackground(Color.green);
-                    buttons[i].addActionListener(this);
+                    buttons[x].setBackground(Color.green);
+                    buttons[x].addActionListener(this);
+                   
                 }
+               
+             x++;
                 
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }  catch (Exception e) {
+            try {
+               dos.close();
+                dis.close();
+                client.close();
+                
+            } catch (IOException ex) {
+                System.out.println("ngat ket noi server");
+            }
+           
         }
     }
     
-    public void getDatabase() {
-        try {
-            ResultSet rs = access.Query("select * from TICKET");
-            int i = 0;
-            while(rs.next()) {  
-                i = rs.getInt(1);
-                buttons[i] = new JButton();
-                buttons[i].setText(i + "");
-                
-                if(rs.getInt(2) == 1) { // đã được mua               
-                    buttons[i].setBackground(Color.red);
-                    buttons[i].removeActionListener(this);
-                }
-                else if(rs.getInt(3) == 1) { // đã được đặt
-                    buttons[i].setBackground(Color.yellow);
-                    buttons[i].addActionListener(this);
+    public void getDatabase(){
+       try {
+             dos.writeUTF("select * from TICKET");  
+             String sms = dis.readUTF();                             
+             String[] words = sms.split("\\s");
+             System.out.println("getDatabase");
+             int x = 1;
+             for(int i = words.length-1; i > 0 ; i= i-2 ){
+                buttons[x] = new JButton(); 
+                buttons[x].setText(x + "");
+                if(Integer.parseInt(words[i-1]) == 1) { // đã được mua                   
+                    buttons[x].setBackground(Color.red);
+                    buttons[x].removeActionListener(this);
+                   
                 }                
-                else { // chưa mua, chưa đặt
-                    buttons[i].setBackground(Color.green);
-                    buttons[i].addActionListener(this);
+                else if(Integer.parseInt(words[i]) == 1) { // đã được đặt
+                    buttons[x].setBackground(Color.yellow);
+                    buttons[x].addActionListener(this);
+                  
+                }                
+                else {// chưa mua, chưa đặt
+                    buttons[x].setBackground(Color.green);
+                    buttons[x].addActionListener(this);
+                   
                 }
-                jPanel_Buttons.add(buttons[i]);
+               
+                        jPanel_Buttons.add(buttons[x]);
+                        x++;
+//                     this.listGhe[i].setSold(Integer.parseInt(words[i]));
+//                     listGhe[i].setBlock(Integer.parseInt(words[i+1]));
+//                     System.out.println(Integer.parseInt(words[i]));
+//                     System.out.println(Integer.parseInt(words[i+1]));
+             }
+        } catch (Exception e) {
+            try {
+                dos.close();
+                dis.close();
+                client.close();
+                
+            } catch (IOException ex) {
+                System.out.println("ngat ket noi server");
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+           
         }
-    }
+        
+       
+       
+ }
     
     private void jButton_MuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_MuaActionPerformed
         // TODO add your handling code here:
         if(timerDatGhe.isRunning())
             timerDatGhe.stop();
         jLabel_GheDuocMua.setText("Ghế " + gheDangDat + " đã được mua");
-        access.Update("update TICKET set SOLD = 1 where ID = " + gheDangDat);
+        
+        try {
+            dos.writeUTF("update TICKET set SOLD = 1 where ID = " + gheDangDat);
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
         int i = Integer.parseInt(gheDangDat);
         buttons[i].setBackground(Color.red);
         buttons[i].removeActionListener(this);
     }//GEN-LAST:event_jButton_MuaActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        // TODO add your handling code here:
-        access.Update("update TICKET set BLOCK = 0 where SOLD = 0");
+        try {
+            // TODO add your handling code here:
+  
+            dos.writeUTF("update TICKET set BLOCK = 0 where SOLD = 0");
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_formWindowClosing
 
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton btn = (JButton) e.getSource();
-        
-        ResultSet rs = access.Query("select * from TICKET where ID = " + btn.getText());
+         System.out.println(btn.getText());      
         try {
-            if(rs.next())
-                if(rs.getInt(3) == 1) {
-                    jLabel_CanhBao.setText("Ghế đang được đặt!");
-                    return;
-                }                    
-        } catch (SQLException ex) {
+            dos.writeUTF("select * from TICKET where ID = " + btn.getText());
+            String sms = dis.readUTF();                             
+            String[] words = sms.split("\\s");
+            System.out.println("do dai:" + words.length);
+            for (int i = 0; i < words.length; i++) {
+                System.out.println(words[i]);
+            }
+            
+            
+//                if(Integer.parseInt(words[1]) == 1) {
+//                    jLabel_CanhBao.setText("Ghế đang được đặt!");
+//                    return;
+//                }
+            
+            
+        } catch (IOException ex) { 
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
                 
@@ -252,13 +344,23 @@ public class Client extends javax.swing.JFrame implements ActionListener{
             timerDatGhe.stop();
             jLabel_GheBiHuy.setText("Ghế " + gheDangDat + " đã bị hủy đặt");
             buttons[Integer.parseInt(gheDangDat)].setBackground(Color.green);
-            access.Update("update TICKET set BLOCK = 0 where ID = " + gheDangDat);
+            
+            try {
+                dos.writeUTF("update TICKET set BLOCK = 0 where ID = " + gheDangDat);
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }           
         
         gheDangDat = btn.getText();
+        
         jLabel_GheDangDat.setText("Ghế " + gheDangDat + " đang được đặt");
         buttons[Integer.parseInt(gheDangDat)].setBackground(Color.yellow);
-        access.Update("update TICKET set BLOCK = 1 where ID = " + gheDangDat);
+        try {
+            dos.writeUTF("update TICKET set BLOCK = 1 where ID = " + gheDangDat);
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
         timerDatGhe.start();
     }
 
@@ -268,7 +370,7 @@ public class Client extends javax.swing.JFrame implements ActionListener{
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws UnknownHostException, IOException {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -292,14 +394,18 @@ public class Client extends javax.swing.JFrame implements ActionListener{
         }
         //</editor-fold>
         //</editor-fold>
-
+        //</editor-fold>
+        //</editor-fold>
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Client().setVisible(true);
+                    new Client().setVisible(true);               
             }
         });
     }
+    
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_Mua;
@@ -311,7 +417,6 @@ public class Client extends javax.swing.JFrame implements ActionListener{
     private javax.swing.JPanel jPanel_Status;
     // End of variables declaration//GEN-END:variables
 }
-
 class ReadClient extends Thread{
     private Socket client;
 
@@ -326,7 +431,18 @@ class ReadClient extends Thread{
             dis = new DataInputStream(client.getInputStream());
             while(true){
                 String sms = dis.readUTF();
-                System.out.println(sms);
+                 
+                
+                
+                String[] words = sms.split("\\s");
+               
+                
+                 for(int i = 1; i < words.length; i= i+2 ){
+//                     Client.listGhe[i].setBlock(Integer.parseInt(words[i]));
+                     System.out.println(Integer.parseInt(words[i]));
+                 }
+                 
+                 
             }
         } catch (Exception e) {
             try {
@@ -338,37 +454,32 @@ class ReadClient extends Thread{
             
         }
 
-//            try {
-//               
-//                 dis = new DataInputStream(client.getInputStream());// InputStream from where to receive the map, in case of network you get it from the Socket instance.
-//                final ObjectInputStream mapInputStream = new ObjectInputStream(dis);
-//                final Map<A, B> yourMap = (Map) mapInputStream.readObject();
-//           
-//            } finally {
-//                mapInputStream.close();
-//            }
     }
     
     
 }
 class WriteClient extends Thread{
     private Socket client;
+    private String query;
   
 
-    public WriteClient(Socket client) {
+    public WriteClient(Socket client, String query) {
         this.client = client;
+        this.query = query;
+        
     }
 
     @Override
     public void run() {
         DataOutputStream dos = null;
-        Scanner sc = null;
+      
         try {
             dos = new DataOutputStream(client.getOutputStream());
-        sc = new Scanner(System.in);
+       
         while(true){
-            String sms = sc.nextLine();
-            dos.writeUTF(sms);        
+           
+            dos.writeUTF(query);
+           
         }
         } catch (Exception e) {
              try {
@@ -382,3 +493,4 @@ class WriteClient extends Thread{
     }
     
 }
+
