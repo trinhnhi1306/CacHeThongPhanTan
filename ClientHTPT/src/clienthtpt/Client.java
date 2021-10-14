@@ -110,6 +110,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
         jLabel_CanhBao = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Client Vé máy bay");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -292,6 +293,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
             // TODO add your handling code here:
 
             dos.writeUTF("update TICKET set BLOCK = 0 where SOLD = 0");
+            
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
