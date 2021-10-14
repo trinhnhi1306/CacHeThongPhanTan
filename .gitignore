@@ -25,3 +25,6 @@ hs_err_pid*
 /ClientHTPT/nbproject/private/
 /ServerHTPT/build/
 /ServerHTPT/nbproject/private/
+/TestConnect/build/
+/TestConnect/dist/
+/TestConnect/nbproject/private/
