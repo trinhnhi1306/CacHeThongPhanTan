@@ -31,7 +31,7 @@ public class DBAccess {
     public ResultSet Query(String str) {
         try {
             ResultSet rs = stmt.executeQuery(str);
-            System.out.println(str);
+            
             return rs;
         } catch (Exception e) {
             return null;

@@ -2,9 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package javaapplication22;
+package clienthtpt;
 
-import javaapplication22.DBAccess;
+
+import com.connect.ConnectDatabaseDVX;
+import com.serviceExchange.ExchangeData;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,14 +36,11 @@ public class Client extends javax.swing.JFrame implements ActionListener {
     private Timer timerDatGhe;
     private Timer timerRefresh;
     private String gheDangDat;
-    private String trangThaiGhe;
-    private DBAccess access;
+    
     public JButton[] buttons;
-    public Ghe[] listGhe;
-
     DataOutputStream dos = null;
     DataInputStream dis = null;
-
+    ExchangeData seatStatus;
     Socket client;
 
     /**
@@ -52,22 +51,19 @@ public class Client extends javax.swing.JFrame implements ActionListener {
         initComponents();
         try {
             client = new Socket(InetAddress.getLocalHost(), 15797);
-
+             
             // gửi câu lệnh
             dos = new DataOutputStream(client.getOutputStream());
             dis = new DataInputStream(client.getInputStream());
-//            ReadClient read = new ReadClient(client);
-//            read.start();
-
+            seatStatus = new ExchangeData();
         } catch (UnknownHostException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-        access = new DBAccess();
         gheDangDat = "";
-        trangThaiGhe = "";
-        listGhe = new Ghe[100];
+       
+        
         timerDatGhe = new Timer(10000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -200,7 +196,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
         try {
             dos.writeUTF("select * from TICKET");
             String sms = dis.readUTF();
-            String[] words = sms.split("\\s");
+            String[] words = seatStatus.seatStatus(sms);
             
             int x = 0;
             for (int i = words.length - 1; i > 0; i = i - 3) {
@@ -236,7 +232,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
         try {
             dos.writeUTF("select * from TICKET");
             String sms = dis.readUTF();
-            String[] words = sms.split("\\s");
+            String[] words = seatStatus.seatStatus(sms);
             
             int x = 0;
             for (int i = words.length - 1; i > 0; i = i - 3) {
@@ -258,11 +254,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
                 }
 
                 jPanel_Buttons.add(buttons[x]);
-                //x++;
-//                     this.listGhe[i].setSold(Integer.parseInt(words[i]));
-//                     listGhe[i].setBlock(Integer.parseInt(words[i+1]));
-//                     System.out.println(Integer.parseInt(words[i]));
-//                     System.out.println(Integer.parseInt(words[i+1]));
+
             }
         } catch (Exception e) {
             try {
@@ -312,7 +304,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
         try {
             dos.writeUTF("select * from TICKET where ID = " + btn.getText());
             String sms = dis.readUTF();
-            String[] words = sms.split("\\s");
+            String[] words = seatStatus.seatStatus(sms);
            
            
 
@@ -378,6 +370,10 @@ public class Client extends javax.swing.JFrame implements ActionListener {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -399,76 +395,3 @@ public class Client extends javax.swing.JFrame implements ActionListener {
     // End of variables declaration//GEN-END:variables
 }
 
-class ReadClient extends Thread {
-
-    private Socket client;
-
-    public ReadClient(Socket client) {
-        this.client = client;
-    }
-
-    @Override
-    public void run() {
-        DataInputStream dis = null;
-        try {
-            dis = new DataInputStream(client.getInputStream());
-            while (true) {
-                String sms = dis.readUTF();
-
-                String[] words = sms.split("\\s");
-
-                for (int i = 1; i < words.length; i = i + 2) {
-//                     Client.listGhe[i].setBlock(Integer.parseInt(words[i]));
-                    System.out.println(Integer.parseInt(words[i]));
-                }
-
-            }
-        } catch (Exception e) {
-            try {
-                dis.close();
-                client.close();
-            } catch (IOException ex) {
-                System.out.println("ngat ket noi server");
-            }
-
-        }
-
-    }
-
-}
-
-class WriteClient extends Thread {
-
-    private Socket client;
-    private String query;
-
-    public WriteClient(Socket client, String query) {
-        this.client = client;
-        this.query = query;
-
-    }
-
-    @Override
-    public void run() {
-        DataOutputStream dos = null;
-
-        try {
-            dos = new DataOutputStream(client.getOutputStream());
-
-            while (true) {
-
-                dos.writeUTF(query);
-
-            }
-        } catch (Exception e) {
-            try {
-                dos.close();
-                client.close();
-            } catch (IOException ex) {
-                System.out.println("ngat ket noi server");
-            }
-        }
-
-    }
-
-}

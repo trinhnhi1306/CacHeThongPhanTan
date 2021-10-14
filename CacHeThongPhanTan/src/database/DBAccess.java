@@ -2,6 +2,7 @@ package database;
 
 import java.sql.*;
 
+
 public class DBAccess {
 
     private Connection con;
@@ -11,6 +12,7 @@ public class DBAccess {
         try {
             // connect with SQL Server
             SQLServer_Connection myCon = new SQLServer_Connection();
+
             con = myCon.getConnection();
             stmt = con.createStatement();
         } catch (Exception e) {
