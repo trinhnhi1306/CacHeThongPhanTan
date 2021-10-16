@@ -42,6 +42,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
     DataInputStream dis = null;
     ExchangeData seatStatus;
     Socket client;
+    String ipServer = "192.168.1.8";
 
     /**
      * Creates new form Client
@@ -50,7 +51,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
 
         initComponents();
         try {
-            client = new Socket(InetAddress.getLocalHost(), 15797);
+            client = new Socket(ipServer, 15797);
              
             // gửi câu lệnh
             dos = new DataOutputStream(client.getOutputStream());
