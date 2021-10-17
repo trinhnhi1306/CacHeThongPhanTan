@@ -4,7 +4,6 @@
  */
 package clienthtpt;
 
-
 import com.connect.ConnectDatabaseDVX;
 import com.serviceExchange.ExchangeData;
 import java.awt.Color;
@@ -36,13 +35,13 @@ public class Client extends javax.swing.JFrame implements ActionListener {
     private Timer timerDatGhe;
     private Timer timerRefresh;
     private String gheDangDat;
-    
+
     public JButton[] buttons;
     DataOutputStream dos = null;
     DataInputStream dis = null;
     ExchangeData seatStatus;
     Socket client;
-    String ipServer = "192.168.1.8";
+    String ipServer = "192.168.1.107";
 
     /**
      * Creates new form Client
@@ -52,7 +51,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
         initComponents();
         try {
             client = new Socket(ipServer, 15797);
-             
+
             // gửi câu lệnh
             dos = new DataOutputStream(client.getOutputStream());
             dis = new DataInputStream(client.getInputStream());
@@ -63,8 +62,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
         gheDangDat = "";
-       
-        
+
         timerDatGhe = new Timer(10000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -123,8 +121,12 @@ public class Client extends javax.swing.JFrame implements ActionListener {
 
         jPanel_Status.setBackground(new java.awt.Color(255, 255, 255));
 
+        jLabel_GheDangDat.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel_GheDangDat.setForeground(new java.awt.Color(204, 0, 51));
         jLabel_GheDangDat.setText("Ghế đang đặt");
 
+        jButton_Mua.setBackground(new java.awt.Color(204, 204, 255));
+        jButton_Mua.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jButton_Mua.setText("Mua");
         jButton_Mua.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -132,12 +134,15 @@ public class Client extends javax.swing.JFrame implements ActionListener {
             }
         });
 
+        jLabel_GheBiHuy.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel_GheBiHuy.setForeground(new java.awt.Color(204, 0, 51));
         jLabel_GheBiHuy.setText("Ghế bị hủy");
 
+        jLabel_GheDuocMua.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel_GheDuocMua.setForeground(new java.awt.Color(204, 0, 51));
         jLabel_GheDuocMua.setText("Ghế được mua");
 
+        jLabel_CanhBao.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel_CanhBao.setForeground(new java.awt.Color(204, 0, 51));
         jLabel_CanhBao.setText("Cảnh báo");
 
@@ -168,9 +173,11 @@ public class Client extends javax.swing.JFrame implements ActionListener {
                     .addComponent(jLabel_GheDangDat, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel_CanhBao, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel_StatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel_GheBiHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton_Mua, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel_StatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton_Mua, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel_StatusLayout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(jLabel_GheBiHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel_GheDuocMua, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -200,7 +207,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
             dos.writeUTF("select * from TICKET");
             String sms = dis.readUTF();
             String[] words = seatStatus.seatStatus(sms);
-            
+
             int x = 0;
             for (int i = words.length - 1; i > 0; i = i - 3) {
                 x = Integer.parseInt(words[i - 2]);
@@ -237,10 +244,9 @@ public class Client extends javax.swing.JFrame implements ActionListener {
             dos.writeUTF("select * from TICKET");
             // đọc dữ liệu từ server
             String sms = dis.readUTF();
-            
-             
+
             String[] words = seatStatus.seatStatus(sms);
-            
+
             int x = 0;
             for (int i = words.length - 1; i > 0; i = i - 3) {
                 x = Integer.parseInt(words[i - 2]);
@@ -280,9 +286,11 @@ public class Client extends javax.swing.JFrame implements ActionListener {
 
     private void jButton_MuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_MuaActionPerformed
         // TODO add your handling code here:
-        if (timerDatGhe.isRunning()) {
-            timerDatGhe.stop();
+        if (!timerDatGhe.isRunning()) {
+            jLabel_CanhBao.setText("Bạn chưa đặt ghế!");
+            return;
         }
+        timerDatGhe.stop();
         jLabel_GheDuocMua.setText("Ghế " + gheDangDat + " đã được mua");
 
         try {
@@ -296,12 +304,12 @@ public class Client extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_jButton_MuaActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        
+
         try {
             // TODO add your handling code here:
 
             dos.writeUTF("update TICKET set BLOCK = 0 where SOLD = 0");
-            
+
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -315,8 +323,6 @@ public class Client extends javax.swing.JFrame implements ActionListener {
             dos.writeUTF("select * from TICKET where ID = " + btn.getText());
             String sms = dis.readUTF();
             String[] words = seatStatus.seatStatus(sms);
-           
-           
 
             if (Integer.parseInt(words[2]) == 1) {
                 jLabel_CanhBao.setText("Ghế đang được đặt!");
@@ -404,4 +410,3 @@ public class Client extends javax.swing.JFrame implements ActionListener {
     private javax.swing.JPanel jPanel_Status;
     // End of variables declaration//GEN-END:variables
 }
-
