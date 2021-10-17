@@ -243,13 +243,17 @@ class ReadServer extends Thread {
                     listGhe = access.Query(sms);
                     
                     //gửi đi đến tất cả client
-                    for (Socket item : ServerHTPT.listSK) {
-                        if (item.getPort() == socket.getPort()) {
-                            DataOutputStream dos = new DataOutputStream(item.getOutputStream());
+//                    for (Socket item : ServerHTPT.listSK) {
+//                        if (item.getPort() == socket.getPort()) {
+//                            
+//                            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+//                            dos.writeUTF(listGhe);
+//                        }
+//
+//                    }
+                    
+                     DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
                             dos.writeUTF(listGhe);
-                        }
-
-                    }
                     
                 } else if (sms.contains("update")) {
                     access.Update(sms);

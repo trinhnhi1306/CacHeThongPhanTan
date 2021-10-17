@@ -51,6 +51,8 @@ public class ConnectDatabaseDVX {
             return -1;
         }
     }
+    
+ 
 
     public ResultSet loadData(String str) {
         try {
@@ -70,9 +72,9 @@ public class ConnectDatabaseDVX {
             while (rs.next()) {
 
 //                      Ghe ghe = new Ghe(rs.getInt(1),rs.getInt(2),rs.getInt(2));
-                String id = String.valueOf(rs.getInt(1));
-                String sold = String.valueOf(rs.getInt(2));
-                String block = String.valueOf(rs.getInt(3));
+                String id = String.valueOf(rs.getInt(1)); 
+                String sold = String.valueOf(rs.getInt(2)); // bán
+                String block = String.valueOf(rs.getInt(3)); // đặt
                 String u = id + " " + sold + " " + block;
                 listGhe = u + " " + listGhe;
             }

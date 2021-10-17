@@ -119,7 +119,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
         });
 
         jPanel_Buttons.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel_Buttons.setLayout(new java.awt.GridLayout(5, 10, 5, 5));
+        jPanel_Buttons.setLayout(new java.awt.GridLayout(7, 9, 5, 5));
 
         jPanel_Status.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -194,6 +194,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    // reset mỗi 10 giây
     public void refreshButtons() {
         try {
             dos.writeUTF("select * from TICKET");
@@ -230,15 +231,20 @@ public class Client extends javax.swing.JFrame implements ActionListener {
         }
     }
 
+    // khởi tạo button
     public void getDatabase() {
         try {
             dos.writeUTF("select * from TICKET");
+            // đọc dữ liệu từ server
             String sms = dis.readUTF();
+            
+             
             String[] words = seatStatus.seatStatus(sms);
             
             int x = 0;
             for (int i = words.length - 1; i > 0; i = i - 3) {
                 x = Integer.parseInt(words[i - 2]);
+                // khởi tạo button
                 buttons[x] = new JButton();
                 buttons[x].setText(x + "");
                 if (Integer.parseInt(words[i - 1]) == 1) { // đã được mua                   
@@ -254,7 +260,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
                     buttons[x].addActionListener(this);
 
                 }
-
+                // add button
                 jPanel_Buttons.add(buttons[x]);
 
             }
@@ -290,6 +296,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_jButton_MuaActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        
         try {
             // TODO add your handling code here:
 
