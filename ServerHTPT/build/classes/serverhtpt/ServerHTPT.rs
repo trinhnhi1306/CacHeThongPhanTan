@@ -1,3 +1,0 @@
-serverhtpt.ServerHTPT
-serverhtpt.ReadServer
-serverhtpt.WriteServer

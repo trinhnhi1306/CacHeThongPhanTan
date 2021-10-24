@@ -41,7 +41,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
     DataInputStream dis = null;
     ExchangeData seatStatus;
     Socket client;
-    String ipServer = "192.168.1.107";
+    String ipServer = "192.168.1.106";
 
     /**
      * Creates new form Client
@@ -68,7 +68,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 jLabel_GheBiHuy.setText("Ghế " + gheDangDat + " đã bị hủy đặt");
                 buttons[Integer.parseInt(gheDangDat)].setBackground(Color.green);
-                String ok = "update TICKET set BLOCK = 0 where ID = " + gheDangDat;
+                String ok = "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE BEGIN TRAN update TICKET set BLOCK = 0 where ID = " + gheDangDat + " COMMIT";
                 try {
                     dos.writeUTF(ok);
                 } catch (IOException ex) {
@@ -201,7 +201,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    // reset mỗi 10 giây
+    // reset mỗi 0,5 giây
     public void refreshButtons() {
         try {
             dos.writeUTF("select * from TICKET");
@@ -294,7 +294,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
         jLabel_GheDuocMua.setText("Ghế " + gheDangDat + " đã được mua");
 
         try {
-            dos.writeUTF("update TICKET set SOLD = 1 where ID = " + gheDangDat);
+            dos.writeUTF("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE BEGIN TRAN update TICKET set SOLD = 1 where ID = " + gheDangDat + " COMMIT");
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -308,7 +308,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
         try {
             // TODO add your handling code here:
 
-            dos.writeUTF("update TICKET set BLOCK = 0 where SOLD = 0");
+            dos.writeUTF("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE BEGIN TRAN update TICKET set BLOCK = 0 where SOLD = 0 COMMIT");
 
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
@@ -339,7 +339,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
             buttons[Integer.parseInt(gheDangDat)].setBackground(Color.green);
 
             try {
-                dos.writeUTF("update TICKET set BLOCK = 0 where ID = " + gheDangDat);
+                dos.writeUTF("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE BEGIN TRAN update TICKET set BLOCK = 0 where ID = " + gheDangDat + " COMMIT");
             } catch (IOException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -350,7 +350,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
         jLabel_GheDangDat.setText("Ghế " + gheDangDat + " đang được đặt");
         buttons[Integer.parseInt(gheDangDat)].setBackground(Color.yellow);
         try {
-            dos.writeUTF("update TICKET set BLOCK = 1 where ID = " + gheDangDat);
+            dos.writeUTF("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE BEGIN TRAN update TICKET set BLOCK = 1 where ID = " + gheDangDat + " COMMIT");
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }

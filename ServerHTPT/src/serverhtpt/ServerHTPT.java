@@ -253,7 +253,7 @@ class ReadServer extends Thread {
                     access.Update(sms);
                     if (sms.contains("SOLD = 1")) {
                         String[] smsSubStr = sms.split("\\s+");
-                        ServerHTPT.jTextArea_ThongBao.setText(ServerHTPT.jTextArea_ThongBao.getText() + "\n\n" + "client " + socket.getPort() + " đã mua ghế số " + smsSubStr[smsSubStr.length - 1]);
+                        ServerHTPT.jTextArea_ThongBao.setText(ServerHTPT.jTextArea_ThongBao.getText() + "\n\n" + "client " + socket.getPort() + " đã mua ghế số " + smsSubStr[smsSubStr.length - 2]);
                     }
                 }
 
