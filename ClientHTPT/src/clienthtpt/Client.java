@@ -41,7 +41,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
     DataInputStream dis = null;
     ExchangeData seatStatus;
     Socket client;
-    String ipServer = "192.168.1.106";
+    String ipServer = "192.168.1.107";
 
     /**
      * Creates new form Client
@@ -66,7 +66,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
         timerDatGhe = new Timer(10000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                jLabel_GheBiHuy.setText("Ghế " + gheDangDat + " đã bị hủy đặt");
+                jTextArea_ThongBao.setText(jTextArea_ThongBao.getText() + "\n\n" + "Ghế " + gheDangDat + " đã bị hủy đặt");
                 buttons[Integer.parseInt(gheDangDat)].setBackground(Color.green);
                 String ok = "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE BEGIN TRAN update TICKET set BLOCK = 0 where ID = " + gheDangDat + " COMMIT";
                 try {
@@ -100,13 +100,13 @@ public class Client extends javax.swing.JFrame implements ActionListener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea_ThongBao = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
         jPanel_Buttons = new javax.swing.JPanel();
-        jPanel_Status = new javax.swing.JPanel();
-        jLabel_GheDangDat = new javax.swing.JLabel();
         jButton_Mua = new javax.swing.JButton();
-        jLabel_GheBiHuy = new javax.swing.JLabel();
-        jLabel_GheDuocMua = new javax.swing.JLabel();
-        jLabel_CanhBao = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Client Vé máy bay");
@@ -116,14 +116,19 @@ public class Client extends javax.swing.JFrame implements ActionListener {
             }
         });
 
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
+
+        jTextArea_ThongBao.setColumns(20);
+        jTextArea_ThongBao.setRows(5);
+        jScrollPane1.setViewportView(jTextArea_ThongBao);
+
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jLabel1.setText("Thông báo");
+
         jPanel_Buttons.setBackground(new java.awt.Color(255, 255, 255));
         jPanel_Buttons.setLayout(new java.awt.GridLayout(7, 9, 5, 5));
-
-        jPanel_Status.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel_GheDangDat.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel_GheDangDat.setForeground(new java.awt.Color(204, 0, 51));
-        jLabel_GheDangDat.setText("Ghế đang đặt");
 
         jButton_Mua.setBackground(new java.awt.Color(204, 204, 255));
         jButton_Mua.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
@@ -134,68 +139,59 @@ public class Client extends javax.swing.JFrame implements ActionListener {
             }
         });
 
-        jLabel_GheBiHuy.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel_GheBiHuy.setForeground(new java.awt.Color(204, 0, 51));
-        jLabel_GheBiHuy.setText("Ghế bị hủy");
+        jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        jLabel_GheDuocMua.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel_GheDuocMua.setForeground(new java.awt.Color(204, 0, 51));
-        jLabel_GheDuocMua.setText("Ghế được mua");
-
-        jLabel_CanhBao.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel_CanhBao.setForeground(new java.awt.Color(204, 0, 51));
-        jLabel_CanhBao.setText("Cảnh báo");
-
-        javax.swing.GroupLayout jPanel_StatusLayout = new javax.swing.GroupLayout(jPanel_Status);
-        jPanel_Status.setLayout(jPanel_StatusLayout);
-        jPanel_StatusLayout.setHorizontalGroup(
-            jPanel_StatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_StatusLayout.createSequentialGroup()
-                .addGap(68, 68, 68)
-                .addGroup(jPanel_StatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel_GheDuocMua, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
-                    .addComponent(jLabel_GheBiHuy, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel_GheDangDat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
-                .addGroup(jPanel_StatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_StatusLayout.createSequentialGroup()
-                        .addComponent(jButton_Mua, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(102, 102, 102))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_StatusLayout.createSequentialGroup()
-                        .addComponent(jLabel_CanhBao, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(46, 46, 46))))
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addComponent(jPanel_Buttons, javax.swing.GroupLayout.PREFERRED_SIZE, 469, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(177, 177, 177)
+                        .addComponent(jButton_Mua, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addGap(21, 21, 21))
         );
-        jPanel_StatusLayout.setVerticalGroup(
-            jPanel_StatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_StatusLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addGroup(jPanel_StatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel_GheDangDat, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel_CanhBao, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel_StatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton_Mua, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel_StatusLayout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jLabel_GheBiHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel_GheDuocMua, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel_Buttons, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton_Mua, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(30, 30, 30))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jSeparator1)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel_Buttons, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel_Status, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel_Buttons, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel_Status, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -287,11 +283,11 @@ public class Client extends javax.swing.JFrame implements ActionListener {
     private void jButton_MuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_MuaActionPerformed
         // TODO add your handling code here:
         if (!timerDatGhe.isRunning()) {
-            jLabel_CanhBao.setText("Bạn chưa đặt ghế!");
+            jTextArea_ThongBao.setText(jTextArea_ThongBao.getText() + "\n\n" + "Bạn chưa đặt ghế!");
             return;
         }
         timerDatGhe.stop();
-        jLabel_GheDuocMua.setText("Ghế " + gheDangDat + " đã được mua");
+        jTextArea_ThongBao.setText(jTextArea_ThongBao.getText() + "\n\n" + "Ghế " + gheDangDat + " đã được mua");
 
         try {
             dos.writeUTF("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE BEGIN TRAN update TICKET set SOLD = 1 where ID = " + gheDangDat + " COMMIT");
@@ -325,7 +321,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
             String[] words = seatStatus.seatStatus(sms);
 
             if (Integer.parseInt(words[2]) == 1) {
-                jLabel_CanhBao.setText("Ghế đang được đặt!");
+                jTextArea_ThongBao.setText(jTextArea_ThongBao.getText() + "\n\n" + "Ghế " + btn.getText() + " đã được người khác đặt!");
                 return;
             }
 
@@ -335,7 +331,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
 
         if (timerDatGhe.isRunning()) {
             timerDatGhe.stop();
-            jLabel_GheBiHuy.setText("Ghế " + gheDangDat + " đã bị hủy đặt");
+            jTextArea_ThongBao.setText(jTextArea_ThongBao.getText() + "\n\n" + "Ghế " + gheDangDat + " đã bị hủy đặt");
             buttons[Integer.parseInt(gheDangDat)].setBackground(Color.green);
 
             try {
@@ -347,7 +343,7 @@ public class Client extends javax.swing.JFrame implements ActionListener {
 
         gheDangDat = btn.getText();
 
-        jLabel_GheDangDat.setText("Ghế " + gheDangDat + " đang được đặt");
+        jTextArea_ThongBao.setText(jTextArea_ThongBao.getText() + "\n\n" + "Ghế " + gheDangDat + " đang được đặt");
         buttons[Integer.parseInt(gheDangDat)].setBackground(Color.yellow);
         try {
             dos.writeUTF("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE BEGIN TRAN update TICKET set BLOCK = 1 where ID = " + gheDangDat + " COMMIT");
@@ -402,11 +398,11 @@ public class Client extends javax.swing.JFrame implements ActionListener {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_Mua;
-    private javax.swing.JLabel jLabel_CanhBao;
-    private javax.swing.JLabel jLabel_GheBiHuy;
-    private javax.swing.JLabel jLabel_GheDangDat;
-    private javax.swing.JLabel jLabel_GheDuocMua;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel_Buttons;
-    private javax.swing.JPanel jPanel_Status;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTextArea jTextArea_ThongBao;
     // End of variables declaration//GEN-END:variables
 }

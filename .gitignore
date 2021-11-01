@@ -1,2 +1,8 @@
 /ClientHTPT/build/
 /ClientHTPT/dist/
+/Connect/build/
+/Connect/dist/
+/Connect/nbproject/private/
+/ConnectDatabase/build/
+/ConnectDatabase/dist/
+/ConnectDatabase/nbproject/private/

@@ -169,7 +169,7 @@ public class ServerHTPT extends JFrame {
 
             // đợi một thằng kết nối tới và add vào list
             Socket socket = server.accept();
-            jTextArea_ThongBao.setText(jTextArea_ThongBao.getText() + "\n\n" + "Server đã kết nối với client số: " + socket.getPort());
+            jTextArea_ThongBao.setText(jTextArea_ThongBao.getText() + "\n\n" + "Server đã kết nối với client " + socket.getInetAddress());
             System.out.println("Server đã kết nối với " + socket);
             ServerHTPT.listSK.add(socket);
             // đợi đọc
@@ -253,13 +253,13 @@ class ReadServer extends Thread {
                     access.Update(sms);
                     if (sms.contains("SOLD = 1")) {
                         String[] smsSubStr = sms.split("\\s+");
-                        ServerHTPT.jTextArea_ThongBao.setText(ServerHTPT.jTextArea_ThongBao.getText() + "\n\n" + "client " + socket.getPort() + " đã mua ghế số " + smsSubStr[smsSubStr.length - 2]);
+                        ServerHTPT.jTextArea_ThongBao.setText(ServerHTPT.jTextArea_ThongBao.getText() + "\n\n" + "Client " + socket.getInetAddress() + " đã mua ghế số " + smsSubStr[smsSubStr.length - 2]);
                     }
                 }
 
             }
         } catch (Exception e) {
-            ServerHTPT.jTextArea_ThongBao.setText(ServerHTPT.jTextArea_ThongBao.getText() + "\n\n" + "client " + socket.getPort() + " đã ngắt kết nối!");
+            ServerHTPT.jTextArea_ThongBao.setText(ServerHTPT.jTextArea_ThongBao.getText() + "\n\n" + "Client " + socket.getInetAddress() + " đã ngắt kết nối!");
             System.out.println(socket + " đã ngắt kết nối!");
             try {
                 dis.close();
